@@ -106,9 +106,9 @@ class Memberorder extends Controller
                         $option = $detail->option;
                         $optionType = $option ? $menuName . ' ' . $option->type : 'ไม่มีตัวเลือก';
                         $priceTotal = number_format($detail->quantity * $detail->price, 2);
-
                         $info .= '<li class="list-group-item d-flex bd-highlight align-items-center">';
-                        $info .= '<div class="flex-grow-1 bd-highlight"><small class="text-muted">' . htmlspecialchars($optionType) . '</small> — <span class="fw-medium">จำนวน ' . $detail->quantity . '</span></div>';
+                        $info .= '<div class="flex-grow-1 bd-highlight"><small class="text-muted">' . htmlspecialchars($optionType) . '</small> — <span class="fw-medium m-1">จำนวน ' . $detail->quantity . '</span>
+                        <button class="btn btn-sm btn-primary OpenRecipes" data-id="' . $detail->option_id . '">เปิดสูตรอาหาร</button></div>';
                         $info .= '<button class="btn btn-sm btn-primary bd-highlight">' . $priceTotal . ' บาท</button>';
                         $info .= '</li>';
                     }
