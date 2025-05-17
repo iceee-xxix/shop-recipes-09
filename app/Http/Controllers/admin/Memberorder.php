@@ -17,7 +17,7 @@ class Memberorder extends Controller
 
     public function Memberorder()
     {
-        $data['function_key'] = 'order';
+        $data['function_key'] = 'Memberorder';
         $data['rider'] = User::where('is_rider', 1)->get();
         $data['config'] = Config::first();
         return view('order_member.order', $data);
@@ -106,9 +106,9 @@ class Memberorder extends Controller
                         $option = $detail->option;
                         $optionType = $option ? $menuName . ' ' . $option->type : 'ไม่มีตัวเลือก';
                         $priceTotal = number_format($detail->quantity * $detail->price, 2);
+
                         $info .= '<li class="list-group-item d-flex bd-highlight align-items-center">';
-                        $info .= '<div class="flex-grow-1 bd-highlight"><small class="text-muted">' . htmlspecialchars($optionType) . '</small> — <span class="fw-medium m-1">จำนวน ' . $detail->quantity . '</span>
-                        <button class="btn btn-sm btn-primary OpenRecipes" data-id="' . $detail->option_id . '">เปิดสูตรอาหาร</button></div>';
+                        $info .= '<div class="flex-grow-1 bd-highlight"><small class="text-muted">' . htmlspecialchars($optionType) . '</small> — <span class="fw-medium">จำนวน ' . $detail->quantity . '</span></div>';
                         $info .= '<button class="btn btn-sm btn-primary bd-highlight">' . $priceTotal . ' บาท</button>';
                         $info .= '</li>';
                     }
@@ -118,5 +118,56 @@ class Memberorder extends Controller
             }
         }
         echo $info;
+    }
+
+    public function MemberorderRider()
+    {
+        $data['function_key'] = 'MemberorderRider';
+        $data['rider'] = User::where('is_rider', 1)->get();
+        $data['config'] = Config::first();
+        return view('order_member.order_rider', $data);
+    }
+
+    public function MemberorderRiderlistData()
+    {
+        $data = [
+            'status' => false,
+            'message' => '',
+            'data' => []
+        ];
+        $order = Orders::select('orders.*', 'users.name')
+            ->join('users', 'orders.users_id', '=', 'users.id')
+            ->where('table_id')
+            ->whereNot('users_id')
+            ->whereNot('address_id')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if (count($order) > 0) {
+            $info = [];
+            foreach ($order as $rs) {
+                $status = '';
+                if ($rs->status == 1) {
+                    $status = '<button class="btn btn-sm btn-primary">กำลังทำอาหาร</button>';
+                }
+                $flag_order = '<button class="btn btn-sm btn-warning">สั่งออนไลน์</button>';
+                $action = '<button data-id="' . $rs->id . '" type="button" class="btn btn-sm btn-outline-primary modalShow m-1">รายละเอียด</button>';
+                $info[] = [
+                    'flag_order' => $flag_order,
+                    'name' => $rs->name,
+                    'total' => $rs->total,
+                    'remark' => $rs->remark,
+                    'status' => $status,
+                    'created' => $this->DateThai($rs->created_at),
+                    'action' => $action
+                ];
+            }
+            $data = [
+                'data' => $info,
+                'status' => true,
+                'message' => 'success'
+            ];
+        }
+        return response()->json($data);
     }
 }
