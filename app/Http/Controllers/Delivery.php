@@ -61,6 +61,8 @@ class Delivery extends Controller
             $orderData = $request->input('orderData');
             $remark = $request->input('remark');
             $item = array();
+            $menu_id = array();
+            $categories_id = array();
             $total = 0;
             foreach ($orderData as $order) {
                 foreach ($order as $rs) {
@@ -73,6 +75,24 @@ class Delivery extends Controller
                     $total = $total + ($rs['price'] * $rs['qty']);
                 }
             }
+            foreach ($orderData as $order) {
+                foreach ($order as $rs) {
+                    $item[] = [
+                        'id' => $rs['id'],
+                        'price' => $rs['price'],
+                        'option' => $rs['option'],
+                        'qty' => $rs['qty'],
+                    ];
+                    $total = $total + ($rs['price'] * $rs['qty']);
+                    $menu_id[] = $rs['id'];
+                }
+            }
+            $menu_id = array_unique($menu_id);
+            foreach ($menu_id as $rs) {
+                $menu = Menu::find($rs);
+                $categories_id[] = $menu->categories_member_id;
+            }
+            $categories_id = array_unique($categories_id);
 
             if (!empty($item)) {
                 $info = UsersAddress::where('is_use', 1)->where('users_id', Session::get('user')->id)->first();
@@ -110,7 +130,25 @@ class Delivery extends Controller
                             }
                         }
                     }
-                    event(new OrderCreated(['📦 มีออเดอร์ใหม่']));
+                    $order = [
+                        'is_member' => 0,
+                        'text' => '📦 มีออเดอร์ใหม่'
+                    ];
+                    event(new OrderCreated($order));
+                    if (!empty($categories_id)) {
+                        foreach ($categories_id as $rs) {
+                            $order = [
+                                'is_member' => 1,
+                                'categories_id' => $rs,
+                                'text' => '📦 มีออเดอร์ใหม่'
+                            ];
+                            event(new OrderCreated($order));
+                        }
+                    }
+                    $data = [
+                        'status' => true,
+                        'message' => 'สั่งออเดอร์เรียบร้อยแล้ว',
+                    ];
                     $data = [
                         'status' => true,
                         'message' => 'สั่งออเดอร์เรียบร้อยแล้ว',

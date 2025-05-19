@@ -55,6 +55,21 @@
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modalRecipes">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">รายละเอียดสูตรอาหาร</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="body-html-recipes">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -203,6 +218,26 @@
                         }
                     }
                 });
+            }
+        });
+    });
+    $(document).on('click', '.OpenRecipes', function(e) {
+        var id = $(this).data('id');
+        $('#modal-detail').modal('hide');
+        Swal.showLoading();
+        $.ajax({
+            type: "post",
+            url: "{{ route('OpenRecipes') }}",
+            data: {
+                id: id
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                Swal.close();
+                $('#modalRecipes').modal('show');
+                $('#body-html-recipes').html(response);
             }
         });
     });

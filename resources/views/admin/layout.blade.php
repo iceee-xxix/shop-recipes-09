@@ -40,14 +40,16 @@
         var channel = pusher.subscribe('orders');
         channel.bind('App\\Events\\OrderCreated', function(data) {
             const order = data.order;
+            console.log(order);
             <?php if (Session::get('user')->is_member == 0) { ?>
                 document.getElementById('notifySound').play();
                 Swal.fire({
                     icon: 'info',
-                    title: order,
+                    title: order.text,
                 })
             <?php }
             if (Session::get('user')->is_member == 1) { ?>
+                console.log(order);
                 if (order.categories_id == categories_member_id) {
                     document.getElementById('notifySound').play();
                     Swal.fire({
