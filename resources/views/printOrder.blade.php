@@ -9,33 +9,34 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px 0;
-            color: #2d2d2d;
+            padding: 5px 0;
+            color: black;
             background: #ffffff;
             /* ชัดเจนว่าให้พื้นหลังขาว */
         }
 
         .receipt {
             width: 100%;
-            max-width: 420px;
+            max-width: 500px;
             margin: 0 auto;
             /* จัดให้อยู่กึ่งกลางแนวนอน */
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            padding: 30px;
+            /* border: 1px solid black; */
+            padding: 10px;
             border-radius: 5px;
         }
 
         .receipt h2 {
             text-align: center;
             margin-top: 5px;
-            margin-bottom: 20px;
-            font-weight: 600;
-            color: #1e293b;
+            font-size: 38px;
+            margin-bottom: 0px;
+            font-weight: bold;
+            color: black;
         }
 
         .receipt span {
-            font-weight: 700;
+            font-weight: bold;
         }
 
         .header {
@@ -56,19 +57,13 @@
 
         .header .tax-label {
             text-align: right;
-            font-weight: 600;
-            color: #475569;
+            font-weight: bold;
+            color: black;
         }
 
         .info p {
             margin: 4px 0;
-            font-size: 14px;
-        }
-
-        .detail p {
-            margin: 4px 0;
-            font-size: 14px;
-            text-align: end;
+            font-size: 26px;
         }
 
         table {
@@ -80,8 +75,7 @@
         th,
         td {
             padding: 10px;
-            font-size: 14px;
-            border-bottom: 1px solid #e2e8f0;
+            font-size: 26px;
         }
 
         th:nth-child(1),
@@ -104,38 +98,20 @@
 
         .total {
             text-align: right;
-            font-weight: 700;
-            color: #1e293b;
+            font-weight: bold;
+            color: black;
             border-top: 2px solid #000;
             margin-top: 20px;
             padding-top: 12px;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         .footer {
             margin-top: 40px;
             text-align: center;
             font-size: 13px;
-            color: #64748b;
+            color: black;
             line-height: 1.6;
-        }
-
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            #print-area,
-            #print-area * {
-                visibility: visible;
-            }
-
-            #print-area {
-                position: absolute;
-                top: 20;
-                left: 0;
-                width: 100%;
-            }
         }
     </style>
 </head>
@@ -144,16 +120,13 @@
     <div id="print-area">
         <div class="receipt">
             <h2><span>{{$config->name}}</span></h2>
+            <center>
+                <?= $qr ?>
+            </center>
             <div class="header">
                 <div class="info">
-                    <p><strong>เลขที่ใบเสร็จ #{{$pay->payment_number}}</strong></p>
-                    <p>วันที่: {{$pay->created_at}}</p>
-                </div>
-                <div class="detail">
-                    <p><strong>ชื่อ: {{$get['name']}}</strong></p>
-                    <p>เบอร์โทรศัพท์: {{$get['tel']}}</p>
-                    <p>เลขประจำตัวผู้เสียภาษี: {{$get['tax_id']}}</p>
-                    <p>ที่อยู่: {{$get['address']}}</p>
+                    <p><strong>เลขที่โต้ะ #{{$table->table_number}}</strong></p>
+                    <p>วันที่: <?= date('Y-m-d H:i:s') ?></p>
                 </div>
             </div>
             <table>
@@ -179,8 +152,7 @@
                     @endforeach
                 </tbody>
             </table>
-
-            <p class="total">Total: <?= number_format($pay->total, '2') ?> ฿</p>
+            <p class="total">Total: <?= number_format($pay, '2') ?> ฿</p>
         </div>
     </div>
 </body>

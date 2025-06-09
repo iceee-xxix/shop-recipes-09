@@ -140,7 +140,7 @@
         var id = $(this).data('id');
         $.ajax({
             type: "post",
-            url: "{{ route('listOrderDetailRider') }}",
+            url: "{{ route('MemberorderlistOrderDetailRider') }}",
             data: {
                 id: id
             },
