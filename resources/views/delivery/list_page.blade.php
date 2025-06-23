@@ -205,9 +205,16 @@ $config = Config::first();
                         optionTextEl.style.fontSize = '12px';
                         optionTextEl.textContent = optionsText;
 
+                        const note = document.createElement('div');
+                        note.className = 'text-muted';
+                        note.style.fontSize = '12px';
+                        note.textContent = 'หมายเหตุ : ' + item.note;
+
                         leftCol.appendChild(title);
                         leftCol.appendChild(optionTextEl);
-
+                        if (item.note) {
+                            leftCol.appendChild(note);
+                        }
                         const rightCol = document.createElement('div');
                         rightCol.className = 'col-2 d-flex flex-column align-items-end';
 

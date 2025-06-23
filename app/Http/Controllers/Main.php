@@ -92,7 +92,8 @@ class Main extends Controller
             $item[$key] = [
                 'menu_id' => $order['id'],
                 'quantity' => $order['amount'],
-                'price' => $order['total_price']
+                'price' => $order['total_price'],
+                'note' => $order['note']
             ];
             if (!empty($order['options'])) {
                 foreach ($order['options'] as $rs) {
@@ -124,6 +125,7 @@ class Main extends Controller
                     $orderdetail->menu_id = $rs['menu_id'];
                     $orderdetail->quantity = $rs['quantity'];
                     $orderdetail->price = $rs['price'];
+                    $orderdetail->remark = $rs['note'];
                     if ($orderdetail->save()) {
                         foreach ($rs['option'] as $key => $option) {
                             $orderOption = new OrdersOption();

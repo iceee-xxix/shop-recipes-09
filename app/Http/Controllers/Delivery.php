@@ -140,6 +140,7 @@ class Delivery extends Controller
                             $orderdetail->menu_id = $rs['menu_id'];
                             $orderdetail->quantity = $rs['quantity'];
                             $orderdetail->price = $rs['price'];
+                            $orderdetail->remark = $rs['note'];
                             if ($orderdetail->save()) {
                                 foreach ($rs['option'] as $key => $option) {
                                     $orderOption = new OrdersOption();
