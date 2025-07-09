@@ -52,6 +52,7 @@
             <div class="col-12 order-2">
                 <div class="card">
                     <div class="card-header d-flex justify-content-end">
+                        <a href="{{ route('ExpensesExport') }}" class="btn btn-sm btn-outline-info d-flex align-items-center me-2" style="font-size:14px">ดาวน์โหลด Excel&nbsp;<i class="bx bx-download"></i></a>
                         <a href="{{route('ExpensesCreate')}}" class="btn btn-sm btn-outline-success d-flex align-items-center" style="font-size:14px">เพิ่มค่าใช้จ่าย&nbsp;<i class="bx bxs-plus-circle"></i></a>
                     </div>
                     <div class="card-body">

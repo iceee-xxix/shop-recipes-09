@@ -195,6 +195,7 @@ Route::middleware(['role:admin'])->group(function () {
     Route::get('/admin/expenses/edit/{id}', [Expenses::class, 'ExpensesEdit'])->name('ExpensesEdit');
     Route::post('/admin/expenses/save', [Expenses::class, 'ExpensesSave'])->name('ExpensesSave');
     Route::post('/admin/expenses/delete', [Expenses::class, 'ExpensesDelete'])->name('ExpensesDelete');
+     Route::get('/admin/expenses/export', [Expenses::class, 'exportExcel'])->name('ExpensesExport');
     //สมาชิกหมวดหมู่
     Route::get('/admin/member/category', [CategoriesMember::class, 'memberCategory'])->name('memberCategory');
     Route::post('/admin/member/category/listData', [CategoriesMember::class, 'membercategorylistData'])->name('membercategorylistData');

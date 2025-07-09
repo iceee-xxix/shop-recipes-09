@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\CategoriesExpenses;
 use App\Models\Expenses as ModelsExpenses;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 class Expenses extends Controller
@@ -111,6 +115,51 @@ class Expenses extends Controller
         }
 
         return response()->json($data);
+    }
+
+    public function exportExcel()
+    {
+        $expenses = ModelsExpenses::with('category')->orderBy('date', 'asc')->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set headers
+
+        $columns = ['รายการค่าใช้จ่าย', 'หมวดหมู่', 'จำนวน (บาท)', 'วันที่จ่ายชำระ'];
+        $colLetters = ['A', 'B', 'C', 'D'];
+        // Set headers
+        foreach ($columns as $i => $col) {
+            $sheet->setCellValue($colLetters[$i] . '1', $col);
+        }
+
+        // Fill data
+        $row = 2;
+        foreach ($expenses as $exp) {
+            $sheet->setCellValue('A' . $row, $exp->name);
+            $sheet->setCellValue('B' . $row, optional($exp->category)->name);
+            $sheet->setCellValue('C' . $row, $exp->price);
+            $excelDate = '';
+            if (!empty($exp->date)) {
+                $excelDate = date('d/m/Y', strtotime($exp->date));
+            }
+            $sheet->setCellValue('D' . $row, $excelDate);
+            $row++;
+        }
+
+        // Auto size columns
+        foreach (range('A', $sheet->getHighestColumn()) as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $fileName = 'รายจ่าย_' . date('Ymd_His') . '.xlsx';
+        // Redirect output to a client’s web browser (Excel)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
     }
 
     function DateThai($strDate)
